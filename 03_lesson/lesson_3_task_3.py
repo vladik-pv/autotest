@@ -6,7 +6,11 @@ from_address = Address("102000", "Санкт-Петербург", "Невски�
 
 mailing = Mailing(to_address, from_address, 250.0, "TRK123456")
 
-print(f"Отправление {mailing.track} из {mailing.from_address.index}, {mailing.from_address.city}, "
-      f"{mailing.from_address.street}, {mailing.from_address.home} - {mailing.from_address.flat} "
-      f"в {mailing.to_address.index}, {mailing.to_address.city}, {mailing.to_address.street}, "
-      f"{mailing.to_address.home} - {mailing.to_address.flat}. Стоимость {mailing.cost} рублей.")
+print(f"Отправление {mailing.track} из {mailing.from_address.index},"
+      f"{mailing.from_address.city}, "
+      f"{mailing.from_address.street}, {mailing.from_address.home} -"
+      f"{mailing.from_address.flat} "
+      f"в {mailing.to_address.index}, {mailing.to_address.city},"
+      f"{mailing.to_address.street}, "
+      f"{mailing.to_address.home} - {mailing.to_address.flat}."
+      f"Стоимость {mailing.cost} рублей.")
