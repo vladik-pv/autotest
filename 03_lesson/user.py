@@ -13,6 +13,6 @@ class User:
         print(self.lastname)
 
 
-    def Full_name(self):
+    def full_name(self):
         print(f"{self.firstname} {self.lastname}")
 
