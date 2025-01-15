@@ -2,39 +2,45 @@ import pytest
 from string_utils import StringUtils
 
 
-def test_capitilize():
+@pytest.mark.parametrize("input_str, expected", [
+    ("skypro", "Skypro"),
+    ("hello world", "Hello world"),
+    ("python program", "Python program"),
+    ("1st place", "1st place"),
+    ("", ""),
+    (" a new beginning", " a new beginning")
+])
+def test_capitilize(input_str, expected):
     utils = StringUtils()
-
-    assert utils.capitilize("skypro") == "Skypro"
-    assert utils.capitilize("hello world") == "Hello world"
-    assert utils.capitilize("python program") == "Python program"
-    assert utils.capitilize("1st place") == "1st place"
-    assert utils.capitilize("") == ""
-    assert utils.capitilize(" a new beginning") == " a new beginning"
+    assert utils.capitilize(input_str) == expected
 
 
-def test_trim():
-    utils = StringUtils()
+class TestStringTrim:
+    @pytest.mark.parametrize("input_str, expected_result", [
+        ("   skypro", "skypro"),
+        ("   hello world", "hello world"),
+        ("      python programming", "python programming"),
+        ("singleWord", "singleWord"),
+        ("", ""),
+        ("   leading spaces", "leading spaces")
+    ])
+    def test_trim(self, input_str, expected_result):
+        utils = StringUtils()
+        assert utils.trim(input_str) == expected_result
 
-    assert utils.trim("   skypro") == "skypro"
-    assert utils.trim("   hello world") == "hello world"
-    assert utils.trim("      python programming") == "python programming"
-    assert utils.trim("singleWord") == "singleWord"
-    assert utils.trim("") == ""
-    assert utils.trim("   leading spaces") == "leading spaces"
 
-
-def test_to_list():
-    utils = StringUtils()
-
-    assert utils.to_list("a,b,c,d") == ["a", "b", "c", "d"]
-    assert utils.to_list("1:2:3", ":") == ["1", "2", "3"]
-    assert utils.to_list("") == []
-    assert utils.to_list("   ") == []
-    assert utils.to_list("apple|banana|cherry", "|") == [
-        "apple", "banana", "cherry"
-        ]
-    assert utils.to_list("one") == ["one"]
+class TestStringUtils:
+    @pytest.mark.parametrize("input_str, delimiter, expected_result", [
+        ("a,b,c,d", ",", ["a", "b", "c", "d"]),
+        ("1:2:3", ":", ["1", "2", "3"]),
+        ("", None, []),
+        ("   ", None, []),
+        ("apple|banana|cherry", "|", ["apple", "banana", "cherry"]),
+        ("one", None, ["one"])
+    ])
+    def test_to_list(self, input_str, delimiter, expected_result):
+        utils = StringUtils()
+        assert utils.to_list(input_str, delimiter) == expected_result
 
 
 class TestStringContains:
@@ -66,19 +72,21 @@ class TestStringSymbol:
     def string_processor(self):
         return StringUtils()
 
-    def test_delete_symbol(self, string_processor):
-        assert string_processor.delete_symbol
-        ("SkyPro", "k") == "SyPro"
+    @pytest.mark.parametrize(
+        "input_str, symbol, expected_result", [
+            ("SkyPro", "k", "SyPro"),
+            ("SkyPro", "Pro", "Sky"),
+            ("Hello World", "o", "Hell Wrld"),
+            ("TestString", "a", "TestString"),
+            ("", "x", "")
+        ]
+    )
+    def test_delete_symbol(
+        self, string_processor, input_str, symbol, expected_result
+    ):
         assert string_processor.delete_symbol(
-            "SkyPro", "Pro"
-            ) == "Sky"
-        assert string_processor.delete_symbol(
-            "Hello World", "o"
-            ) == "Hell Wrld"
-        assert string_processor.delete_symbol(
-            "TestString", "a"
-            ) == "TestString"
-        assert string_processor.delete_symbol("", "x") == ""
+            input_str, symbol
+            ) == expected_result
 
 
 class TestStringWith:
@@ -86,15 +94,20 @@ class TestStringWith:
     def string_utils(self):
         return StringUtils()
 
-    def test_starts_with(self, string_utils):
-        assert string_utils.starts_with("SkyPro", "S")
-        assert not string_utils.starts_with("SkyPro", "P")
-        assert string_utils.starts_with("Hello World", "H")
-        assert not string_utils.starts_with("", "A")
-        assert string_utils.starts_with("Python", "")
-        assert string_utils.starts_with("   Leading spaces", " ")
-        assert not string_utils.starts_with("MixedCase", "m")
-        assert string_utils.starts_with("123456", "1")
+    @pytest.mark.parametrize(
+        "input_str, prefix, expected", [
+            ("SkyPro", "S", True),
+            ("SkyPro", "P", False),
+            ("Hello World", "H", True),
+            ("", "A", False),
+            ("Python", "", True),
+            ("   Leading spaces", " ", True),
+            ("MixedCase", "m", False),
+            ("123456", "1", True)
+        ]
+    )
+    def test_starts_with(self, string_utils, input_str, prefix, expected):
+        assert string_utils.starts_with(input_str, prefix) == expected
 
 
 class TestEndWith:
@@ -102,39 +115,56 @@ class TestEndWith:
     def string_utils(self):
         return StringUtils()
 
-    def test_end_with(self, string_utils):
-        assert string_utils.end_with("SkyPro", "o")
-        assert not string_utils.end_with("SkyPro", "y")
-        assert string_utils.end_with("Hello World", "d")
-        assert not string_utils.end_with("", "A")
-        assert string_utils.end_with("Python", "")
-        assert string_utils.end_with("   Trailing spaces", " ")
-        assert string_utils.end_with("MixedCase", "e")
-        assert string_utils.end_with("123456", "6")
+    @pytest.mark.parametrize(
+        "input_str, suffix, expected", [
+            ("SkyPro", "o", True),
+            ("SkyPro", "y", False),
+            ("Hello World", "d", True),
+            ("", "A", False),
+            ("Python", "", True),
+            ("   Trailing spaces", " ", True),
+            ("MixedCase", "e", True),
+            ("123456", "6", True)
+        ]
+    )
+    def test_end_with(self, string_utils, input_str, suffix, expected):
+        assert string_utils.end_with(input_str, suffix) == expected
 
 
-class TestIs_empty:
+class TestIsEmpty:
     @pytest.fixture
     def string_utils(self):
         return StringUtils()
 
-    def test_is_empty(self, string_utils):
-        assert string_utils.is_empty("")
-        assert string_utils.is_empty(" ")
-        assert string_utils.is_empty("   ")
-        assert not string_utils.is_empty("SkyPro")
-        assert not string_utils.is_empty("   SkyPro   ")
+    @pytest.mark.parametrize(
+        "input_str, expected", [
+            ("", True),
+            (" ", True),
+            ("   ", True),
+            ("SkyPro", False),
+            ("   SkyPro   ", False)
+        ]
+    )
+    def test_is_empty(self, string_utils, input_str, expected):
+        assert string_utils.is_empty(input_str) == expected
 
 
-class Test_to_string:
+class TestToString:
     @pytest.fixture
-    def list_utils(self):
+    def string_utils(self):
         return StringUtils()
 
-    def test_list_to_string(self, string_utils):
-        assert string_utils.list_to_string([1, 2, 3, 4]) == "1, 2, 3, 4"
-        assert string_utils.list_to_string(["Sky", "Pro"]) == "Sky, Pro"
-        assert string_utils.list_to_string(["Sky", "Pro"], "-") == "Sky-Pro"
-        assert string_utils.list_to_string([]) == ""
-        assert string_utils.list_to_string([1]) == "1"
-        assert string_utils.list_to_string([1, 2]) == "1, 2"
+    @pytest.mark.parametrize(
+        "input_list, separator, expected", [
+            ([1, 2, 3, 4], ", ", "1, 2, 3, 4"),
+            (["Sky", "Pro"], ", ", "Sky, Pro"),
+            (["Sky", "Pro"], "-", "Sky-Pro"),
+            ([], ", ", ""),
+            ([1], ", ", "1"),
+            ([1, 2], ", ", "1, 2"),
+        ]
+    )
+    def test_list_to_string(
+        self, string_utils, input_list, separator, expected
+    ):
+        assert string_utils.list_to_string(input_list, separator) == expected
