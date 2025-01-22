@@ -20,20 +20,5 @@ time.sleep(2)
 
 print(f'Количество кнопок Delete: {len(delete_buttons)}')
 
-driver.get("http://uitestingplayground.com/dynamicid")
-
-blue_button = driver.find_element(By.CSS_SELECTOR, "button.btn")
-blue_button.click()
-
-time.sleep(2)
-
-time.sleep(2)
-
-driver.get("http://uitestingplayground.com/classattr")
-
-floating_button = driver.find_element(By.CSS_SELECTOR, "button.btn-primary")
-floating_button.click()
-
-time.sleep(2)
 
 driver.quit()
