@@ -5,7 +5,7 @@ base_url = "https://ru.yougile.com/api-v2"
 
 
 # Авторизация
-def test_create_project():
+def test_auth():
 
     auth_data = {
         "login": "vladik_pv@mail.ru",
@@ -17,6 +17,13 @@ def test_create_project():
     resp = requests.post(base_url + "/auth/keys", json=auth_data)
     assert resp.status_code == 201, "Ошибка при получении ключа авторизации"
     key = resp.json()["key"]
+    return key
+
+
+# Создание проекта
+def test_create_project():
+
+    key = test_auth()
 
 # Данные для создания проекта
     project = {
@@ -34,7 +41,7 @@ def test_create_project():
         )
     assert resp.status_code == 201, "Ошибка при создании проекта"
     new_id = resp.json()["id"]
-    return new_id, key
+    return new_id
 
 
 # Данные для авторизации с неверным паролем
@@ -68,7 +75,8 @@ def test_create_project_error():
 
 # Получение по ID
 def test_get_by_id():
-    new_id, key = test_create_project()
+    new_id = test_create_project()
+    key = test_auth()
     my_headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {key}"
@@ -96,7 +104,8 @@ def test_get_by_id_negative():
 
 # Изменения
 def test_put():
-    new_id, key = test_create_project()
+    new_id = test_create_project()
+    key = test_auth()
     my_headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {key}"
